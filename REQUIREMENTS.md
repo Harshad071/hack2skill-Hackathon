@@ -1,86 +1,316 @@
-# Requirements – AI Capability Builder
-
-> **Core Innovation:** Capability-based learning (can you do X?) vs. consumption-based (did you watch Y?). Transparent AI + India-first design + real-time adaptation.
-
----
-
-## Judge Pitch (60 seconds)
-
-**Problem:** 600M+ learners in India, 90% abandon online courses within 2 weeks. Why? No personalization, endless course lists, overwhelming scope.
-
-**Solution:** AI-powered learning platform that asks "What capability do you want to build today?" instead of "What course?" Our system:
-- Generates personalized career roadmaps (5-8 capabilities with prerequisites)
-- Adapts difficulty in real-time (adjusts after 5 tasks)
-- Makes learning accessible (voice in 2+ languages, offline-ready)
-- Measures competency (can you do X?) not consumption (watched Y?)
-
-**What We Built:** Full Data Science career path with adaptive tasks, voice onboarding, streaks, badges, mobile UI, production backend.
-
-**Why Different:** Transparent AI (users see why tasks recommended) + India-centric (voice accessibility, regional languages, low-bandwidth support) + Adaptive (learns user pace by day 3)
+# 📋 Requirements Specification  
+## PlantSmart — Hyperlocal Crop Risk Intelligence System
 
 ---
 
-## Functional Requirements
+## 1. Overview
 
-| Feature | Details |
-|---------|---------|
-| **Onboarding** | Language selection → career goal (voice/text) → background capture → dashboard |
-| **Career Roadmap** | AI generates 5-8 capabilities with prerequisites for stated goal (<5s) |
-| **Daily Tasks** | System creates 5-7 micro-tasks (~20-30 mins total) adapted to difficulty level |
-| **Difficulty Scaling** | <60% completion = decrease difficulty; >85% = increase difficulty |
-| **Progress Dashboard** | Real-time capability % bars, streak counter, earned badges |
-| **Voice I/O** | Speech-to-text input (85%+ accuracy), text-to-speech output (2 languages) |
-| **Achievements** | Daily streaks + 8-10 badge types (7-day streak, skill master, etc.) |
-| **Mobile-First** | Fully responsive (320px → 1920px), optimized for smartphones |
-| **Authentication** | Email/password registration, JWT sessions, secure logout |
-| **Data Persistence** | PostgreSQL with user progress, task history, badges, preferences |
+PlantSmart is a hyperlocal, explainable AI system designed to reduce crop market risk by combining farmer intent signals with historical price trends, water stress indicators, and weather variability data.
+
+The system enables farmers to make risk-aware crop planning decisions while maintaining transparency, privacy, and usability in low-connectivity rural environments.
+
+This document defines the functional, non-functional, technical, and deployment requirements of the system.
 
 ---
 
-## Non-Functional Requirements
+# 2. Functional Requirements
 
-| Requirement | Target |
-|-------------|--------|
-| Performance | API response <500ms, page load <2s, voice processing <3s |
-| Availability | 99.5% uptime during demo, graceful error handling |
-| Security | Password hashing (bcrypt), JWT tokens, HTTPS, parameterized SQL |
-| Accessibility | WCAG AA compliance, screen reader support, voice alternative |
-| Scalability | Support 10k concurrent users with caching + CDN |
-| Offline Support | Core UI assets cached, sync on reconnect |
-| Localization | English + 2 regional languages (Hindi, Tamil, etc.) |
+## FR-1: Farmer Intent Submission
 
----
+The system shall allow farmers to:
 
-## Hackathon Success Metrics
+- Select State → District → Village
+- Select intended crop
+- Enter land size (optional)
+- Submit anonymously
 
-| Metric | Target | Validation |
-|--------|--------|-----------|
-| **Onboarding** | <2 min completion | User → language → goal → dashboard without errors |
-| **Roadmap Gen** | <5 seconds | AI generates 5-8 capabilities with valid prerequisites |
-| **Task Creation** | 5-7 daily tasks | All actionable, clear, ~20-30 min total |
-| **Adaptation** | Triggers by task 5 | Difficulty demonstrably adjusts after 5 tasks |
-| **Voice Accuracy** | >85% | Speech recognition works in English + 1 regional language |
-| **Mobile Responsiveness** | 100% | All screens render correctly at 3 different widths |
-| **Badges/Streaks** | Visible | User earns 2+ badges during demo flow |
-| **Code Quality** | >80% tests | Unit + integration tests pass, clean architecture |
-| **Zero Crashes** | 100% uptime | Demo runs 5 min without errors or unhandled exceptions |
+The system shall:
+
+- Store submissions with timestamp
+- Aggregate crop intent district-wise
+- Prevent duplicate spam submissions
+- Maintain complete user anonymity
 
 ---
 
-## Judge Evaluation Checklist
+## FR-2: Risk Scoring Engine
 
-**Demo (5 min):** Onboarding → Roadmap → Dashboard → Task completion → Difficulty adjustment → Voice demo → Mobile view
+For every District–Crop combination, the system shall compute:
 
-**Code Quality:** GitHub history, >80% test coverage, no critical lint errors, input validation
+- Market Saturation Index
+- Historical Price Volatility Index
+- Water Stress Impact Score
+- Diversification Signal
+- Community Adoption Ratio
 
-**Innovation:** Transparent AI reasoning visible? Capability-based metrics used? India-first features present (voice, languages, offline)?
+The system shall output:
 
-**Completeness:** Requirements doc clear? Design doc complete? Can deploy on free tier? README with setup instructions?
+- Composite Risk Score (0–100)
+- Risk Category (Low / Medium / High)
+- Confidence Score (%)
+- Explanation Summary
 
 ---
 
-## Post-Launch Roadmap
+## FR-3: Explainability Layer
 
-**Phase 2:** Multiple career tracks, 5+ regional languages, peer matching, community forums
-**Phase 3:** Blockchain credentials, industry job matching, mentor marketplace
-**Phase 4:** Native mobile app, advanced analytics, AI-powered peer recommendations
+For every recommendation, the system shall display:
+
+- Top 3 contributing risk factors
+- Data sources used
+- Data freshness timestamp
+- Confidence score explanation
+
+The model must remain interpretable and transparent.
+
+---
+
+## FR-4: Hyperlocal Intelligence Dashboard
+
+The system shall display:
+
+- Nearby mandi price trends
+- Rainfall deviation trends
+- Groundwater stress level
+- District-level adoption trends
+- Crop diversification indicators
+
+---
+
+## FR-5: Multilingual & Voice Interface
+
+The system shall support:
+
+- English
+- Hindi
+- Marathi (extendable architecture)
+
+The system shall include:
+
+- Voice explanation mode
+- Text-to-speech output
+- Simplified low-literacy UI mode
+
+---
+
+## FR-6: Transparency Module
+
+The system shall clearly display:
+
+- Data sources
+- Update frequency
+- Model confidence
+- Privacy assurance statement
+
+---
+
+## FR-7: Low Bandwidth Optimization
+
+The system shall:
+
+- Load under 3 seconds on 3G network
+- Support compressed API responses
+- Cache previous results for offline re-access
+- Offer lightweight UI mode
+
+---
+
+# 3. Non-Functional Requirements
+
+## NFR-1: Scalability
+
+- Support 10,000+ concurrent district queries
+- Horizontally scalable backend
+- Stateless API architecture
+
+---
+
+## NFR-2: Performance
+
+- API response time < 2 seconds
+- Risk score computation < 500 ms
+- Dashboard load time < 3 seconds on low bandwidth
+
+---
+
+## NFR-3: Reliability
+
+- 99% uptime target
+- Graceful failure handling
+- Clear error feedback to user
+
+---
+
+## NFR-4: Security
+
+- HTTPS enforced
+- Rate limiting enabled
+- No personally identifiable information stored
+- Aggregated insights only
+
+---
+
+## NFR-5: Privacy
+
+- Individual crop choices remain anonymous
+- No public display of individual submissions
+- No resale of farmer data
+- Aggregated district-level analytics only
+
+---
+
+# 4. Data Requirements
+
+## 4.1 Market Data
+
+- Historical mandi price data (minimum 5 years preferred)
+- Daily or weekly granularity
+- District-tagged datasets
+
+---
+
+## 4.2 Weather Data
+
+- Historical rainfall data
+- Seasonal deviation trends
+- Drought probability indicators
+
+---
+
+## 4.3 Water Stress Data
+
+- Groundwater classification
+- Irrigation dependency metrics
+- District-level water stress index
+
+---
+
+## 4.4 Farmer Intent Data
+
+- District
+- Crop selection
+- Timestamp
+- Optional land size
+- Anonymous identifier (non-personal)
+
+---
+
+# 5. Risk Scoring Model Requirements
+
+Composite Risk Score shall be computed as:
+
+Risk Score =  
+w₁(Market Saturation) +  
+w₂(Price Volatility) +  
+w₃(Water Stress) +  
+w₄(Diversification Index)
+
+Where:
+
+- Weights are configurable
+- Score normalized between 0–100
+- Risk category thresholds:
+  - 0–40 → Low
+  - 41–70 → Medium
+  - 71–100 → High
+
+Model must prioritize interpretability over black-box complexity.
+
+---
+
+# 6. System Architecture Requirements
+
+## Backend
+
+- RESTful API architecture
+- Modular scoring engine
+- Independent explainability module
+- Data abstraction layer
+- Caching support
+
+---
+
+## Database
+
+- Farmer Intent → NoSQL (MongoDB)
+- Historical structured datasets → PostgreSQL
+- Caching → Redis (optional but recommended)
+
+---
+
+## Frontend
+
+- Mobile-first responsive design
+- Multilingual framework
+- Voice interaction integration
+- Lightweight UI mode
+
+---
+
+# 7. Deployment Requirements
+
+- Dockerized backend
+- Cloud-ready (AWS / GCP / Azure compatible)
+- Environment variable configuration
+- CI/CD compatible repository structure
+- Secure database configuration
+
+---
+
+# 8. Future Extensibility
+
+System architecture must support:
+
+- Satellite-based crop pattern validation
+- Government API integration
+- SMS advisory mode
+- Offline village kiosk deployment
+- Cooperative/FPO dashboards
+- Advanced predictive modeling upgrades
+
+---
+
+# 9. Acceptance Criteria
+
+The system shall be considered complete when:
+
+- Farmer can submit crop intent successfully
+- Risk score is generated in real time
+- Explanation is clearly displayed
+- Confidence score is shown
+- Data sources are visible
+- Multilingual mode functions correctly
+- System performs under simulated low bandwidth
+
+---
+
+# 10. Technical Stack (Proposed)
+
+Frontend:
+- React.js
+- TailwindCSS
+- i18n Framework
+
+Backend:
+- Python (FastAPI)
+- Pandas
+- Scikit-learn (optional calibration)
+
+Database:
+- MongoDB
+- PostgreSQL
+- Redis (optional)
+
+Deployment:
+- Docker
+- Nginx
+- Cloud Provider of Choice
+
+---
+
+# Conclusion
+
+PlantSmart is designed not only as a prediction system, but as a transparent, explainable, hyperlocal decision-support platform built specifically for farmer trust, scalability, and real-world deployment constraints.
+
+This requirements specification ensures technical clarity, architectural foresight, and production-readiness beyond a typical hackathon prototype.
+
