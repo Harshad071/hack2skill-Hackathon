@@ -1,141 +1,205 @@
-# Design Document – AI Capability Builder
+# 🌱 PlantSmart AI – Design Document
 
-> **The Differentiator:** "What capability do you want to build today?" instead of "What course do you want?" — Learning measured by competency, not consumption.
+## 1. Overview
 
----
+PlantSmart AI is an AI-powered decision-support platform that helps farmers make informed crop planning decisions by predicting:
 
-## Hackathon Focus & Scope
+- Market Saturation Risk
+- Resource Utilization Risk (Water, Soil)
+- Climate Suitability
+- Logistics Feasibility
 
-For the hackathon phase, the system focuses exclusively on:
-- One career path: Data Science Professional
-- Languages: English + one regional language
-- Core flow: Goal → Capabilities → Daily Tasks → Progress Tracking
-
-All features listed outside the MVP are architectural placeholders only and are not part of the evaluated prototype.
+The goal is to reduce price crashes, prevent resource overuse, and promote sustainable rural ecosystems.
 
 ---
 
-## MVP Scope – Hackathon Implementation
+## 2. Problem Statement
 
-### Fully Implemented
-- Single career pathway with AI-generated capability breakdown
-- User onboarding with language selection, voice/text goal input, and background capture
-- Adaptive daily task generation (5–7 tasks, 20–30 minutes total, auto-scaling difficulty)
-- Progress dashboard with capability mastery, skill progress bars, and streak tracking
-- Voice integration with speech-to-text and text-to-speech in two languages
-- Achievement system with streaks and 8–10 badge types
-- Mobile-first responsive UI (320px to 1920px)
-- Authentication using email/password and JWT
-- PostgreSQL database for users, tasks, progress, badges, and skills
-- Redis caching with target API response time under 500ms
+Farmers often choose crops based on last year’s high prices. This leads to:
 
----
+- Oversupply in local markets
+- Price crashes
+- Financial losses
+- Water and soil overexploitation
 
-## Planned Extensions (Post-MVP)
+There is currently no system that predicts **future local saturation risk before planting**.
 
-- Multiple career pathways using predefined templates
-- Multi-language support via translation layer
-- Peer matching and community discussion features
-- Blockchain-based digital credentials (concept stage)
-- Industry job matching engine (concept stage)
-- Mentor marketplace with payment integration
+PlantSmart addresses this gap.
 
 ---
 
-## System Architecture
+## 3. Proposed Solution
 
-### Tech Stack
-- Frontend: React / Next.js with Tailwind CSS
-- Backend: Node.js with Express or FastAPI
-- Database: PostgreSQL
-- Cache: Redis
-- AI Layer: LLM integration (GPT or Claude)
-- Voice: Web Speech API with cloud TTS
-- Deployment: Docker, Kubernetes-ready
+PlantSmart provides a **Market + Sustainability Risk Score** before planting.
 
----
+Instead of predicting exact prices, the system calculates risk probabilities:
 
-## Core Services
-- Authentication service with JWT session handling
-- Career engine for AI roadmap generation
-- Task generator with adaptive difficulty scaling
-- Progress tracker for real-time mastery tracking
-- Voice handler for speech recognition and synthesis
-- Notification service for reminders and streak alerts
+- Market Saturation Risk (%)
+- Water Stress Risk
+- Climate Suitability Score
+- Logistics Feasibility Score
+
+The platform also suggests alternative crops and diversification strategies.
 
 ---
 
-## Data Model
+## 4. System Architecture
 
-Users: id, email, password_hash, language, career_goal, experience_level  
-CareerPaths: id, career_name, capabilities[], prerequisites  
-Capabilities: id, name, sub_skills[], estimated_hours, difficulty  
-DailyTasks: id, user_id, capability_id, difficulty, content, status  
-Progress: id, user_id, capability_id, completion_percentage, last_updated  
-Badges: id, user_id, badge_type, earned_at  
-UserSessions: id, user_id, streak_count, last_active_date  
+### High-Level Components
 
----
-
-## API Endpoints
-
-POST /auth/register – Register a new user  
-POST /auth/login – Authenticate user  
-GET /user/profile – Retrieve user profile  
-POST /career/roadmap – Generate AI career roadmap  
-GET /career/capabilities/:goal – Fetch capability breakdown  
-GET /tasks/daily – Fetch daily task list  
-POST /tasks/:id/complete – Mark task as completed  
-GET /progress/dashboard – Retrieve progress data  
-POST /progress/feedback – Submit task feedback  
-GET /badges/earned – Retrieve earned badges  
-POST /voice/process – Process voice input  
-GET /health – System health check  
+1. Frontend (User Interface)
+2. Backend API
+3. AI/ML Engine
+4. Database
+5. External Data Sources
 
 ---
 
-## UI / UX Design
+## 5. System Workflow
 
-Key screens include onboarding flow, dashboard, task detail view, progress view, and voice interface.
+### Step 1: Farmer Input
 
-Design principles:
-- Mobile-first and voice-accessible
-- Clear visual progress indicators
-- Minimal cognitive load
-- High-contrast WCAG AA compliant UI
-- Offline-ready with cached assets
+Farmer provides:
+- Village / District
+- Land size
+- Season
+- Intended crop
 
----
-
-## AI / ML Architecture
-
-Goal parsing, capability decomposition, difficulty calibration, daily task generation, and adaptive adjustment.
-
-Metrics:
-- Completion rate < 60% reduces difficulty
-- Completion rate > 85% increases difficulty
-- Roadmap generation under 5 seconds
-- Voice recognition accuracy above 85%
+Optional:
+- Soil type
 
 ---
 
-## Security & Compliance
+### Step 2: Data Aggregation
 
-- Password hashing using bcrypt with salt
-- JWT access and refresh tokens
-- Input validation on all endpoints
-- SQL injection prevention via parameterized queries
-- HTTPS enforced with TLS 1.3
-- GDPR-compliant data deletion
-- No persistent storage of voice data
+System collects:
+
+- Historical mandi price data
+- Crop water requirement dataset
+- Climate & rainfall data
+- Transport distance to nearest mandis
+- Crowdsourced "intent-to-plant" entries
 
 ---
 
-## Deployment Strategy
+### Step 3: AI Processing
 
-Development using local Docker  
-Staging on free-tier platforms (Render or Railway)  
-Production on scalable cloud infrastructure (AWS or GCP)  
-Managed PostgreSQL database  
-Optional Redis caching  
-Monitoring with error tracking and performance metrics
+The AI engine performs:
+
+1. Time-Series Analysis  
+   - Price volatility detection  
+   - Seasonal trend modeling  
+
+2. Saturation Risk Calculation  
+   - Nearby crop intent density  
+   - Historical supply-demand mismatch  
+
+3. Resource Risk Evaluation  
+   - Water stress index  
+   - Crop water consumption  
+
+4. Climate Suitability Scoring  
+   - Rainfall pattern compatibility  
+   - Temperature range suitability  
+
+5. Logistics Scoring  
+   - Distance to mandi  
+   - Transport cost estimation  
+
+---
+
+### Step 4: Output Generation
+
+System provides:
+
+- Market Saturation Risk (Low / Medium / High)
+- Water Risk Score
+- Climate Suitability Score
+- Logistics Score
+- Suggested Alternative Crops
+- Diversification Strategy Recommendation
+
+---
+
+## 6. Technology Stack
+
+### Frontend
+- React.js / Streamlit (for MVP)
+
+### Backend
+- Python (FastAPI / Flask)
+
+### Machine Learning
+- Random Forest / XGBoost for risk scoring
+- ARIMA / LSTM (optional) for time-series modeling
+
+### Database
+- PostgreSQL / MongoDB
+
+### Data Sources (MVP Level)
+- Sample mandi price datasets
+- Government open datasets
+- Crop water requirement tables
+
+---
+
+## 7. AI Justification
+
+AI is required because:
+
+- Market risk depends on multiple dynamic variables
+- Human intuition fails in multi-variable forecasting
+- Risk prediction is probabilistic, not deterministic
+- Dynamic intent data improves predictive accuracy
+
+The system outputs probabilities instead of guaranteed price predictions.
+
+---
+
+## 8. Sustainability Impact
+
+PlantSmart promotes:
+
+- Reduced overproduction
+- Lower groundwater depletion
+- Crop diversification
+- Reduced fertilizer dependency
+- Stable rural income cycles
+
+This aligns with long-term rural ecosystem resilience.
+
+---
+
+## 9. Scalability Plan
+
+Phase 1: Single district pilot  
+Phase 2: State-level expansion  
+Phase 3: National integration  
+
+Future stakeholders:
+- Farmers
+- Cooperatives
+- Banks & insurers
+- Government planners
+
+Network effects improve prediction accuracy over time.
+
+---
+
+## 10. Future Enhancements
+
+- Vernacular voice-based input
+- Mobile-first application
+- Climate shock simulation module
+- Government procurement integration
+- Farmer trust & incentive system
+
+---
+
+## 11. Conclusion
+
+PlantSmart AI transforms agriculture from reactive decision-making to predictive planning.
+
+It combines market intelligence and sustainability intelligence to reduce economic and environmental risk in rural ecosystems.
+
+This system aims to build resilient, resource-efficient agricultural communities.
